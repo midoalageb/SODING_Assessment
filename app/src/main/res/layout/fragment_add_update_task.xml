@@ -17,6 +17,7 @@
         android:layout_margin="5dp">
 
         <EditText
+            android:id="@+id/ET_Dialog_Add_update_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/name" />
@@ -29,6 +30,7 @@
         android:layout_margin="5dp">
 
         <EditText
+            android:id="@+id/ET_Dialog_Add_update_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/description" />

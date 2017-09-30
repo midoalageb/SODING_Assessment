@@ -35,37 +35,57 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.TaskA
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Gets TaskDbHelper in onCreate and close it in onDestroy
         mDbHelper = new TaskDbHelper(getApplicationContext());
         setup_view_variables();
-
         setSupportActionBar(toolbar);
         setup_clickListeners();
         get_all_tasks();
     }
 
+    /**
+     * Gets all tasks from DB and list them in RecyclerView rv_tasks
+     */
     private void get_all_tasks() {
         ArrayList<Task> tasks = Task.get_tasks(mDbHelper);
         TaskAdapter adapter = new TaskAdapter(tasks, this);
         rv_tasks.setAdapter(adapter);
     }
 
+    /**
+     * Shows AddUpdateTaskFragment dialog to either add a new task or edit existing task
+     * @param task Task to edit or null to create a new one
+     */
     private void add_Task(Task task) {
         DialogFragment add_update_fragment = AddUpdateTaskFragment.newInstance(
                 task);
         add_update_fragment.show(getSupportFragmentManager(), "dialog");
     }
 
+    /**
+     * Interface implementation for handling edit from RecyclerView TaskAdapter
+     * @param task Task to edit
+     */
     @Override
     public void TaskAdapterOnClickEdit(Task task) {
         add_Task(task);
     }
 
+    /**
+     * Interface implementation for handling edit from RecyclerView TaskAdapter
+     * @param task Task to delete
+     */
     @Override
     public void TaskAdapterOnClickDelete(Task task) {
         task.delete(mDbHelper);
         get_all_tasks();
     }
 
+    /**
+     * Callback from AddUpdateTaskFragment to update or add task
+     * @param task Task to add or update
+     * @param update Whether to update or add new task
+     */
     @Override
     public void onFragmentInteraction(Task task, boolean update) {
         if(update){
@@ -84,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.TaskA
         rv_tasks.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         rv_tasks.setLayoutManager(mLayoutManager);
+        // Add divider between RecyclerView items
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rv_tasks.getContext(),
                 mLayoutManager.getOrientation());
         rv_tasks.addItemDecoration(dividerItemDecoration);

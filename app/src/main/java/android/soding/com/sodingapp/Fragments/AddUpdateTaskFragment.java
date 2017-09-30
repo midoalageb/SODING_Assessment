@@ -50,7 +50,6 @@ public class AddUpdateTaskFragment extends DialogFragment implements SetupActivi
      * @param task Parameter 1.
      * @return A new instance of fragment AddUpdateTaskFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static AddUpdateTaskFragment newInstance(Task task) {
         AddUpdateTaskFragment fragment = new AddUpdateTaskFragment();
         Bundle args = new Bundle();
@@ -77,6 +76,9 @@ public class AddUpdateTaskFragment extends DialogFragment implements SetupActivi
         return root_view;
     }
 
+    /**
+     * If Task is not new (update), display task value in dialog
+     */
     private void set_values() {
         if(task!=null){
             til_name.getEditText().setText(task.mName);
@@ -84,7 +86,11 @@ public class AddUpdateTaskFragment extends DialogFragment implements SetupActivi
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    /**
+     * Callback to MainActivity to add or update Task
+     * @param task Task to add or update
+     * @param update update task or add new
+     */
     public void onButtonPressed(Task task, boolean update) {
         if (mListener != null) {
             mListener.onFragmentInteraction(task, update);
@@ -154,10 +160,13 @@ public class AddUpdateTaskFragment extends DialogFragment implements SetupActivi
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Task task, boolean update);
     }
 
+    /**
+     * Checks if all fields are not empty and sets TextInputLayout error messages accordingly
+     * @return True if all fields are not empty
+     */
     private boolean check_inputs() {
         String name = til_name.getEditText().getText().toString();
         String description = til_description.getEditText().getText().toString();

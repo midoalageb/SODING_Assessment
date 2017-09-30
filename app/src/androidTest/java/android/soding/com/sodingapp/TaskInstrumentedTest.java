@@ -1,15 +1,12 @@
 package android.soding.com.sodingapp;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.os.Parcel;
 import android.soding.com.sodingapp.Helpers.Constants;
 import android.soding.com.sodingapp.Helpers.TaskDbHelper;
 import android.soding.com.sodingapp.Helpers.Utils;
 import android.soding.com.sodingapp.Objects.Task;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.core.deps.guava.util.concurrent.Service;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
@@ -39,24 +36,16 @@ public class TaskInstrumentedTest {
     public static final String TEST_DATE_UPDATED = "1980-01-26 23:00:00";
     public static final String TEST_DATE_UPDATED_2 = "1981-01-26 23:00:00";
 
-    private boolean checkDataBase() {
-        SQLiteDatabase checkDB = null;
-        try {
-            checkDB = SQLiteDatabase.openDatabase(Constants.DB_NAME, null,
-                    SQLiteDatabase.OPEN_READONLY);
-            checkDB.close();
-        } catch (SQLiteException e) {
-            // database doesn't exist yet.
-        }
-        return checkDB != null;
-    }
-
+    /**
+     * Test Add task to DB
+     * @throws Exception
+     */
     @Test
     public void testAddTask() throws Exception {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
-        appContext.deleteDatabase(Constants.DB_NAME);
-        TaskDbHelper mDbHelper = new TaskDbHelper(appContext);
+        appContext.deleteDatabase(Constants.DB_NAME_TEST);
+        TaskDbHelper mDbHelper = new TaskDbHelper(appContext, true);
         assertNotNull(mDbHelper);
 
         Calendar date_created = Calendar.getInstance();
@@ -80,12 +69,16 @@ public class TaskInstrumentedTest {
         mDbHelper.close();
     }
 
+    /**
+     * Test Update Task to DB
+     * @throws Exception
+     */
     @Test
     public void testUpdateTask() throws Exception {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
-        appContext.deleteDatabase(Constants.DB_NAME);
-        TaskDbHelper mDbHelper = new TaskDbHelper(appContext);
+        appContext.deleteDatabase(Constants.DB_NAME_TEST);
+        TaskDbHelper mDbHelper = new TaskDbHelper(appContext, true);
         assertNotNull(mDbHelper);
 
         Calendar date_created = Calendar.getInstance();
@@ -140,12 +133,16 @@ public class TaskInstrumentedTest {
         mDbHelper.close();
     }
 
+    /**
+     * Test delete task from DB
+     * @throws Exception
+     */
     @Test
     public void testDeleteTask() throws Exception {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
-        appContext.deleteDatabase(Constants.DB_NAME);
-        TaskDbHelper mDbHelper = new TaskDbHelper(appContext);
+        appContext.deleteDatabase(Constants.DB_NAME_TEST);
+        TaskDbHelper mDbHelper = new TaskDbHelper(appContext, true);
         assertNotNull(mDbHelper);
 
         Calendar date_created = Calendar.getInstance();
@@ -175,6 +172,10 @@ public class TaskInstrumentedTest {
         mDbHelper.close();
     }
 
+    /**
+     * Testing Parcelable implementation
+     * @throws Exception
+     */
     @Test
     public void testParcelable() throws Exception {
         // Context of the app under test.
