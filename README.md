@@ -13,6 +13,7 @@ Minimum SDK is Android 15
 ## Running the tests
 
 TaskInstrumentedTest.java are automated tests for DB interactions
+
 MainActivityInstrumentedTest.java are automated tests for UI interactions
 
 DB must be empty before running the tests
