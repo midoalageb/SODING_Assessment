@@ -3,6 +3,8 @@ package android.soding.com.sodingapp.Objects;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.soding.com.sodingapp.Helpers.Constants;
 import android.soding.com.sodingapp.Helpers.TaskDbHelper;
 import android.soding.com.sodingapp.Helpers.Utils;
@@ -20,7 +22,7 @@ import java.util.Locale;
  * Class representing a task object
  */
 
-public class Task {
+public class Task implements Parcelable{
     public int mID;
     public String mName, mDescription;
     public Calendar mDateCreated, mDateUpdated;
@@ -34,6 +36,28 @@ public class Task {
         this.mDateUpdated = Calendar.getInstance();
         this.mDateUpdated.setTime(dateUpdated.getTime());
     }
+
+    protected Task(Parcel in) {
+        mID = in.readInt();
+        mName = in.readString();
+        mDescription = in.readString();
+        mDateCreated = Calendar.getInstance();
+        mDateCreated.setTimeInMillis(in.readLong());
+        mDateUpdated = Calendar.getInstance();
+        mDateUpdated.setTimeInMillis(in.readLong());
+    }
+
+    public static final Creator<Task> CREATOR = new Creator<Task>() {
+        @Override
+        public Task createFromParcel(Parcel in) {
+            return new Task(in);
+        }
+
+        @Override
+        public Task[] newArray(int size) {
+            return new Task[size];
+        }
+    };
 
     /**
      * Adds this new task to DB
@@ -150,6 +174,31 @@ public class Task {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(mID);
+        parcel.writeString(mName);
+        parcel.writeString(mDescription);
+        parcel.writeLong(mDateCreated.getTimeInMillis());
+        parcel.writeLong(mDateUpdated.getTimeInMillis());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean result;
+        if(!(obj instanceof Task))  return false;
+        Task object = (Task) obj;
+        result = object.mID == this.mID &&
+                object.mName.equals(this.mName) &&
+                object.mDescription.equals(this.mDescription) &&
+                object.mDateCreated.equals(this.mDateCreated) &&
+                object.mDateUpdated.equals(this.mDateUpdated) ;
+        return result;
+    }
 }
 

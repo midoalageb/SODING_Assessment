@@ -3,4 +3,10 @@
     <string name="action_settings">Settings</string>
     <string name="created">Created: </string>
     <string name="updated">Updated: </string>
+
+    <!--AddUpdateTaskFragment-->
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="save">Save</string>
+
 </resources>

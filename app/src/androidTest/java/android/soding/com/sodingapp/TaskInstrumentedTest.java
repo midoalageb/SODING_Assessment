@@ -3,6 +3,7 @@ package android.soding.com.sodingapp;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.os.Parcel;
 import android.soding.com.sodingapp.Helpers.Constants;
 import android.soding.com.sodingapp.Helpers.TaskDbHelper;
 import android.soding.com.sodingapp.Helpers.Utils;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -171,5 +173,31 @@ public class TaskInstrumentedTest {
         assertEquals(tasks.size(), 0);
 
         mDbHelper.close();
+    }
+
+    @Test
+    public void testParcelable() throws Exception {
+        // Context of the app under test.
+        Calendar date_created = Calendar.getInstance();
+        date_created.setTime(Utils.get_Date_from_String(TEST_DATE_CREATED));
+
+        Calendar date_updated = Calendar.getInstance();
+        date_updated.setTime(Utils.get_Date_from_String(TEST_DATE_UPDATED));
+
+
+        Task task = new Task(0, TEST_NAME, TEST_DESCRIPTION, date_created, date_updated);
+        // Obtain a Parcel object and write the parcelable object to it:
+        Parcel parcel = Parcel.obtain();
+        task.writeToParcel(parcel, 0);
+
+        // After you're done with writing, you need to reset the parcel for reading:
+        parcel.setDataPosition(0);
+
+        // Reconstruct object from parcel and asserts:
+        Task createdFromParcel = Task.CREATOR.createFromParcel(parcel);
+        assertEquals(task, createdFromParcel);
+
+        task.mName="";
+        assertNotEquals(task, createdFromParcel);
     }
 }

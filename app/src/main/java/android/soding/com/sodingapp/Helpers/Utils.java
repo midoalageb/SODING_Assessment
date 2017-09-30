@@ -31,4 +31,14 @@ public class Utils {
         SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT, Locale.ENGLISH);
         return sdf.parse(date);
     }
+
+    /**
+     * Checks if String is empty
+     * @param username
+     * @return "Cannot be blank!" if empty, else "OK"
+     */
+    public static final String validateEmpty(String username) {
+        if(username.equals("")) return "Cannot be blank!";
+        return "OK";
+    }
 }
