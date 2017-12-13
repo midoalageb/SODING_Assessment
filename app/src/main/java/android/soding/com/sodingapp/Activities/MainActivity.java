@@ -7,6 +7,7 @@ import android.soding.com.sodingapp.Helpers.SetupActivity;
 import android.soding.com.sodingapp.Helpers.TaskDbHelper;
 import android.soding.com.sodingapp.Objects.Task;
 import android.soding.com.sodingapp.R;
+import android.soding.com.sodingapp.ViewModel.TaskViewModel;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -30,13 +31,15 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.TaskA
     RecyclerView rv_tasks;
     LinearLayoutManager mLayoutManager;
 
+    TaskViewModel viewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        viewModel = new TaskViewModel(this);
+        viewModel.onCreate();
 
-        // Gets TaskDbHelper in onCreate and close it in onDestroy
-        mDbHelper = new TaskDbHelper(getApplicationContext());
         setup_view_variables();
         setSupportActionBar(toolbar);
         setup_clickListeners();
@@ -47,16 +50,15 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.TaskA
      * Gets all tasks from DB and list them in RecyclerView rv_tasks
      */
     private void get_all_tasks() {
-        ArrayList<Task> tasks = Task.get_tasks(mDbHelper);
-        TaskAdapter adapter = new TaskAdapter(tasks, this);
-        rv_tasks.setAdapter(adapter);
+//        viewModel.get_all_Tasks();
+        rv_tasks.setAdapter(viewModel.adapter);
     }
 
     /**
      * Shows AddUpdateTaskFragment dialog to either add a new task or edit existing task
      * @param task Task to edit or null to create a new one
      */
-    private void add_Task(Task task) {
+    public void add_Task(Task task) {
         DialogFragment add_update_fragment = AddUpdateTaskFragment.newInstance(
                 task);
         add_update_fragment.show(getSupportFragmentManager(), "dialog");
@@ -77,8 +79,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.TaskA
      */
     @Override
     public void TaskAdapterOnClickDelete(Task task) {
-        task.delete(mDbHelper);
-        get_all_tasks();
+        viewModel.delete_Task(task);
     }
 
     /**
@@ -88,12 +89,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.TaskA
      */
     @Override
     public void onFragmentInteraction(Task task, boolean update) {
-        if(update){
-            task.update_entry(mDbHelper);
-        }else {
-            task.add_entry(mDbHelper);
-        }
-        get_all_tasks();
+        viewModel.add_Task(task, update);
     }
 
     @Override
@@ -120,9 +116,22 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.TaskA
         });
     }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        viewModel.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        viewModel.onResume();
+    }
+
     @Override
     protected void onDestroy() {
-        mDbHelper.close();
         super.onDestroy();
+        viewModel.onDestroy();
     }
 }

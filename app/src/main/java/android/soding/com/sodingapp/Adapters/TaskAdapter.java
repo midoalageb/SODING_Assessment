@@ -1,10 +1,13 @@
 package android.soding.com.sodingapp.Adapters;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.soding.com.sodingapp.Helpers.Constants;
 import android.soding.com.sodingapp.Helpers.Utils;
 import android.soding.com.sodingapp.Objects.Task;
 import android.soding.com.sodingapp.R;
+import android.soding.com.sodingapp.databinding.ItemTaskBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +22,7 @@ import java.util.ArrayList;
  */
 
 
-public class TaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     private Context context;
     private ArrayList<Task> mDataset;
     private TaskAdapterInterface mlistener;
@@ -27,17 +30,20 @@ public class TaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageButton ib_edit, ib_delete;
-        public TextView tv_name, tv_description, tv_created, tv_updated;
+//        public TextView tv_name, tv_description, tv_created, tv_updated;
+        public ItemTaskBinding binding;
         private TaskAdapterInterface listener;
 
         public ViewHolder(View v, TaskAdapterInterface listener) {
             super(v);
-            tv_name = (TextView) v.findViewById(R.id.TV_item_name);
-            tv_description = (TextView) v.findViewById(R.id.TV_item_description);
-            tv_created = (TextView) v.findViewById(R.id.TV_item_created);
-            tv_updated = (TextView) v.findViewById(R.id.TV_item_updated);
+//            tv_name = (TextView) v.findViewById(R.id.TV_item_name);
+//            tv_description = (TextView) v.findViewById(R.id.TV_item_description);
+//            tv_created = (TextView) v.findViewById(R.id.TV_item_created);
+//            tv_updated = (TextView) v.findViewById(R.id.TV_item_updated);
             ib_edit = (ImageButton) v.findViewById(R.id.IB_item_update);
             ib_delete = (ImageButton) v.findViewById(R.id.IB_item_delete);
+            this.binding = DataBindingUtil.bind(v);
+
             this.listener = listener;
         }
     }
@@ -55,7 +61,7 @@ public class TaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public ViewHolder onCreateViewHolder(ViewGroup parent,
                                                       int viewType) {
         View v = layoutInflater
                 .inflate(R.layout.item_task, parent, false);
@@ -64,14 +70,16 @@ public class TaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holderr, final int position) {
+    public void onBindViewHolder(final ViewHolder holderr, final int position) {
         final ViewHolder holder = (ViewHolder) holderr;
-        holder.tv_name.setText(mDataset.get(position).mName);
-        holder.tv_description.setText(mDataset.get(position).mDescription);
-        holder.tv_created.setText(Utils.get_String_from_Date(mDataset.get(position).mDateCreated.getTime()));
-        holder.tv_updated.setText(Utils.get_String_from_Date(mDataset.get(position).mDateUpdated.getTime()));
+//        holder.tv_name.setText(mDataset.get(position).mName);
+//        holder.tv_description.setText(mDataset.get(position).mDescription);
+//        holder.tv_created.setText(Utils.get_String_from_Date(mDataset.get(position).mDateCreated.getTime()));
+//        holder.tv_updated.setText(Utils.get_String_from_Date(mDataset.get(position).mDateUpdated.getTime()));
         holder.ib_edit.setOnClickListener(new MyClickListener(mDataset.get(position), Constants.ACTION_UPDATE));
         holder.ib_delete.setOnClickListener(new MyClickListener(mDataset.get(position), Constants.ACTION_DELETE));
+        ItemTaskBinding viewDataBinding = holderr.binding;
+        viewDataBinding.setTask(mDataset.get(position));
     }
 
     @Override

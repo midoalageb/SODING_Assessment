@@ -8,6 +8,7 @@ import android.os.Parcelable;
 import android.soding.com.sodingapp.Helpers.Constants;
 import android.soding.com.sodingapp.Helpers.TaskDbHelper;
 import android.soding.com.sodingapp.Helpers.Utils;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,6 +36,16 @@ public class Task implements Parcelable{
         this.mDateCreated.setTime(dateCreated.getTime());
         this.mDateUpdated = Calendar.getInstance();
         this.mDateUpdated.setTime(dateUpdated.getTime());
+    }
+
+    public String getDateCreated(){
+        return Utils.get_String_from_Date(this.mDateCreated.getTime());
+    }
+
+    public String getDateUpdated(){
+        String v = Utils.get_String_from_Date(this.mDateUpdated.getTime());
+        Log.i("TAG", v);
+        return v;
     }
 
     protected Task(Parcel in) {
@@ -82,14 +93,15 @@ public class Task implements Parcelable{
      * Update current task in DB
      * @param mDbHelper
      */
-    public void update_entry(TaskDbHelper mDbHelper){
+    public Task update_entry(TaskDbHelper mDbHelper){
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(TaskContract.TaskEntry.COLUMN_NAME_NAME, this.mName);
         values.put(TaskContract.TaskEntry.COLUMN_NAME_DESCRIPTION, this.mDescription);
+        this.mDateUpdated = Calendar.getInstance();
         values.put(TaskContract.TaskEntry.COLUMN_NAME_DATEUPDATED,
-                Utils.get_String_from_Date(Calendar.getInstance().getTime()));
+                Utils.get_String_from_Date(this.mDateUpdated.getTime()));
 
 
         String selection = TaskContract.TaskEntry._ID + " LIKE ?";
@@ -100,6 +112,8 @@ public class Task implements Parcelable{
                 values,
                 selection,
                 selectionArgs);
+
+        return this;
     }
 
     /**
